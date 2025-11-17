@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Sign Up</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -190,5 +192,50 @@
     
     <!-- Script tag for your Node.js application logic -->
     <script src="/index.js"></script> 
+=======
+    <title>SignUp</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+
+<body>
+    <div class="container">
+        <div class="curved-shape"></div> 
+        
+        <div class="form-box Login"> <h2>SignUp</h2>
+            <form action="/signup" method="post">
+                
+                <div class="input-box">
+                    <input type="text" id="name" name="username" required autocomplete="off">
+                    <label for="name">Username</label>
+                    <i class='bx bxs-user'></i>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="password" name="password" required>
+                    <label for="password">Password</label>
+                    <i class="bx bxs-lock-alt"></i>
+                </div>
+                
+                <div class="input-box">
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+                
+                <div class="regi-link">
+                    <p>Already have an account?<a class="SignUpLink" href="/">Login</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+        
+        <div class="info-content Login">
+            <h2>CREATE YOUR ACCOUNT</h2>
+            <p>Enter your personal details to start your journey with us.</p>
+        </div>
+
+    </div>
+    <script src="index.js"></script>
+>>>>>>> a548c4dc82968506e3aae65e1751e9db86cc157d
 </body>
 </html>

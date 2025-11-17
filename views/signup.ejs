@@ -9,17 +9,52 @@
     <!-- Load Boxicons for icons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
-        /* Custom styles for the purple gradient and subtle floating effect */
+        /* Custom styles for the purple gradient and dynamic background */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a1a2e; /* Deep space blue background */
+            background-color: #1a1a2e;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 1rem;
+            /* New: Dynamic Background Setup */
+            overflow: hidden; /* Prevent background movement from causing scrollbar */
+            position: relative;
+        }
+
+        /* Keyframes for the Subtle Background Animation */
+        @keyframes subtleMove {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(50px, 50px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Background Element */
+        .bg-gradient-circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 10% 10%, rgba(147, 51, 234, 0.4) 1%, transparent 10%),
+                        radial-gradient(circle at 90% 90%, rgba(79, 70, 229, 0.4) 1%, transparent 10%),
+                        radial-gradient(circle at 30% 70%, rgba(167, 139, 250, 0.3) 1%, transparent 15%);
+            animation: subtleMove 40s infinite alternate;
+            z-index: 0; /* Ensures it stays behind the card */
+        }
+        
+        /* Ensure card sits above the background */
+        #auth-container {
+            z-index: 10; 
+            position: relative;
+        }
+
+        /* Custom glow for the main card (matches home.html and login.html) */
+        .card-glow {
+            box-shadow: 0 0 30px rgba(109, 40, 217, 0.4);
         }
 
         /* Input field custom styling to match the image */
@@ -44,7 +79,7 @@
 
         .input-box input:focus,
         .input-box input:valid {
-            border-bottom-color: #8c52ff;
+            border-bottom-color: #a78bfa; /* Lighter purple focus */
         }
 
         .input-box label {
@@ -61,7 +96,7 @@
         .input-box input:valid ~ label {
             top: -5px;
             font-size: 0.8rem;
-            color: #8c52ff;
+            color: #a78bfa; /* Lighter purple focus */
         }
 
         .input-box .bx {
@@ -76,62 +111,54 @@
 </head>
 
 <body>
-    <!-- Main Container (The Card) -->
-    <div id="auth-container" class="bg-gray-800 rounded-3xl shadow-2xl p-0 overflow-hidden 
-                                  w-full max-w-sm md:max-w-4xl 
-                                  flex flex-col md:flex-row transition-all duration-500">
+    <!-- New: Animated Background Element -->
+    <div class="bg-gradient-circles"></div>
 
-        <!-- Left Side: Sign Up Form -->
-        <div class="form-box w-full md:w-1/2 p-8 md:p-12 order-2 md:order-1 flex flex-col justify-center">
-            <h2 class="text-3xl font-bold text-white mb-6 text-center">Sign Up</h2>
-            
-            <form action="/signup" method="post" class="space-y-4">
-                
-                <!-- Username Input -->
-                <div class="input-box">
-                    <input type="text" id="name" name="username" required autocomplete="off">
-                    <label for="name">Username</label>
-                    <i class='bx bxs-user'></i>
-                </div>
-
-                <!-- Password Input -->
-                <div class="input-box">
-                    <input type="password" id="password" name="password" required>
-                    <label for="password">Password</label>
-                    <i class="bx bxs-lock-alt"></i>
-                </div>
-                
-                <!-- Submit Button -->
-                <button type="submit" class="w-full h-12 mt-6 rounded-xl text-white font-semibold 
-                                            bg-gradient-to-r from-purple-500 to-indigo-600 
-                                            hover:from-purple-600 hover:to-indigo-700 transition-all 
-                                            shadow-lg shadow-purple-500/50">
-                    Submit
-                </button>
-                
-                <!-- Login Link -->
-                <div class="regi-link text-center pt-4">
-                    <p class="text-sm text-gray-400">Already have an account?
-                        <a class="font-medium text-purple-400 hover:text-purple-300 transition-colors" href="/">Login</a>
-                    </p>
-                </div>
-            </form>
-        </div>
+    <!-- Main Container (Single Card Style - Matches Dashboard/Login) -->
+    <div id="auth-container" class="bg-gray-900 rounded-2xl p-8 md:p-12 
+                                  w-full max-w-md transition-all duration-500 card-glow">
         
-        <!-- Right Side: Info Content -->
-        <div class="info-content w-full md:w-1/2 p-12 order-1 md:order-2 
-                    bg-gradient-to-br from-purple-700 to-indigo-900 text-white 
-                    flex flex-col justify-center items-center text-center">
-            
-            <i class='bx bxs-group text-6xl mb-4 opacity-80'></i>
-            <h2 class="text-3xl font-extrabold mb-3">WELCOME!</h2>
-            <p class="text-gray-200 text-lg">Enter your personal details to start your journey with us and access exclusive features.</p>
+        <!-- Signup Icon -->
+        <div class="flex justify-center mb-6">
+            <i class='bx bxs-user-plus text-6xl text-purple-400 opacity-80'></i>
         </div>
 
+        <h2 class="text-3xl font-bold text-white mb-8 text-center">Create Account</h2>
+        
+        <form action="/signup" method="post" class="space-y-4">
+            
+            <!-- Username Input -->
+            <div class="input-box">
+                <input type="text" id="name" name="username" required autocomplete="off">
+                <label for="name">Username</label>
+                <i class='bx bxs-user'></i>
+            </div>
+
+            <!-- Password Input -->
+            <div class="input-box">
+                <input type="password" id="password" name="password" required>
+                <label for="password">Password</label>
+                <i class="bx bxs-lock-alt"></i>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="w-full h-12 mt-6 rounded-xl text-white font-semibold 
+                                        bg-gradient-to-r from-purple-500 to-indigo-600 
+                                        hover:from-purple-600 hover:to-indigo-700 transition-all duration-300
+                                        shadow-lg shadow-purple-500/70 hover:scale-[1.02] transform">
+                Sign Up
+            </button>
+            
+            <!-- Login Link -->
+            <div class="regi-link text-center pt-4">
+                <p class="text-sm text-gray-400">Already have an account?
+                    <a class="font-medium text-purple-400 hover:text-purple-300 transition-colors" href="/">Log In</a>
+                </p>
+            </div>
+        </form>
     </div>
     
     <!-- Script tag for your Node.js application logic -->
-    <!-- NOTE: This client-side file must exist in your 'public' folder for this to work -->
     <script src="/index.js"></script> 
 </body>
 </html>

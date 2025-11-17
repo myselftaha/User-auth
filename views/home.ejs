@@ -1,60 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Dashboard</title>
     <link rel="icon" type="image/png" href="/favicon.png">
+    <!-- These links are needed for the style. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --color-dark-bg: #101014;
+            --color-card-bg: #1e1e24;
+            --color-purple-primary: #8a2be2;
+            --color-neon-purple: #c471ed;
+            --color-link-light: #d6b8f5;
+        }
 
-</head>
-
-<body>
-    <div style="text-align: center;">
-        <h1>Welcome to the Homepage!</h1>
-
-        <p>
-            Your session will time out in: <span id="timer">10</span> seconds
-        </p>
-
-        <p>
-            (This is a simulated session timeout for demonstration purposes.)
-        </p>
-    </div>
-
-    <script>
-        // --- Configuration ---
-        // Set your desired timeout here (e.g., 10s for quick testing, 60s for real use)
-        const TIMEOUT_SECONDS = 10;
-
-        // Your login page URL (which is your root path "/")
-        const LOGOUT_REDIRECT_URL = "/";
-        // ---------------------
-
-        let remainingSeconds = TIMEOUT_SECONDS;
-        const timerDisplay = document.getElementById('timer');
-
-        function updateTimerAndCheck() {
-            remainingSeconds--;
-
-            // Update the display
-            timerDisplay.textContent = remainingSeconds;
-
-            if (remainingSeconds <= 0) {
-                // 1. Stop the countdown
-                clearInterval(timerInterval);
-
-                // 2. Log the action (optional)
-                console.log("Session timed out. Redirecting to login page.");
-
-                // 3. Redirect the user
-                window.location.href = LOGOUT_REDIRECT_URL;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-dark-bg);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 1rem; /* Reduced base padding for mobile */
+            box-shadow: inset 0 0 100px rgba(138, 43, 226, 0.08);
+        }
+        
+        @media (min-width: 640px) { /* sm breakpoint */
+            body {
+                padding: 2rem; /* Restore desktop padding */
             }
         }
 
-        // Start the timer: call updateTimerAndCheck() every 1000 milliseconds (1 second)
-        const timerInterval = setInterval(updateTimerAndCheck, 1000);
+        /* Neon Border Wrap (From login theme) */
+        .neon-border-wrap {
+            position: relative;
+            background: var(--color-card-bg);
+            border-radius: 2rem;
+            padding: 4px;
+            box-shadow: 
+                0 0 25px rgba(138, 43, 226, 0.7), 
+                0 0 50px rgba(196, 113, 237, 0.3); 
+            overflow: hidden;
+        }
+
+        .neon-border-wrap:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 2rem;
+            background: linear-gradient(135deg, var(--color-neon-purple), var(--color-purple-primary));
+            z-index: -1;
+            opacity: 0.9;
+        }
+        
+        /* Card content *inside* the wrap */
+        .card-content {
+            background-color: var(--color-card-bg);
+            border-radius: 2rem;
+            width: 100%;
+            height: 100%;
+            padding: 1.5rem; /* Responsive padding */
+        }
+        
+        @media (min-width: 768px) { /* md breakpoint */
+            .card-content {
+                padding: 2.5rem;
+            }
+        }
+        
+        /* Neon Title Style (From login theme) */
+        .neon-title {
+            font-weight: 800;
+            color: var(--color-neon-purple);
+            text-shadow: 0 0 10px var(--color-neon-purple), 0 0 20px var(--color-purple-primary);
+        }
+
+        /* Neon Button Style (From login theme) */
+        .neon-button {
+            background: linear-gradient(90deg, #9333ea, var(--color-purple-primary));
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 5px 15px rgba(138, 43, 226, 0.7);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .neon-button:hover {
+            background: linear-gradient(90deg, var(--color-neon-purple), #9333ea);
+            box-shadow: 0 8px 25px rgba(196, 113, 237, 1);
+            transform: translateY(-2px);
+        }
+
+        /* Simple button for secondary actions (like logout) */
+        .secondary-button {
+            background: var(--color-card-bg);
+            color: var(--color-link-light);
+            font-weight: 600;
+            border: 2px solid #333;
+            border-radius: 0.75rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .secondary-button:hover {
+            border-color: var(--color-neon-purple);
+            color: white;
+            box-shadow: 0 0 10px rgba(196, 113, 237, 0.5);
+        }
+        
+        /* Styling for the activity list items */
+        .activity-item {
+            background-color: var(--color-dark-bg);
+            border: 1px solid #333;
+            border-left: 4px solid var(--color-purple-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .activity-item:hover {
+            background-color: #2a2a33;
+            border-color: var(--color-neon-purple);
+            transform: scale(1.01);
+        }
+
+        /* Custom Timer Styling */
+        #session-timer-container {
+            border: 2px solid var(--color-purple-primary);
+            background-color: #2a2a33;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+        #session-timer {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-neon-purple);
+            text-shadow: 0 0 8px var(--color-neon-purple);
+            font-variant-numeric: tabular-nums; /* Ensures fixed width for digits */
+        }
+
+    </style>
+</head>
+<body class="w-full">
+
+    <div class="container mx-auto max-w-5xl">
+
+        <!-- Header -->
+        <!-- Adjusted header spacing and alignment for better mobile stacking -->
+        <header class="flex justify-between items-center mb-6 flex-wrap gap-3">
+            <h1 class="text-3xl font-bold neon-title">Portal</h1>
+            
+            <!-- === SESSION TIMER DISPLAY === -->
+            <!-- Made the 'Session Timeout' label smaller on mobile and ensured the timer is always visible -->
+            <div id="session-timer-container" class="flex items-center space-x-2 order-3 w-full sm:w-auto sm:order-2">
+                <i class="fas fa-clock text-purple-400"></i>
+                <span class="text-xs sm:text-sm font-semibold text-gray-300">Session Timeout:</span>
+                <span id="session-timer">00:30</span>
+            </div>
+            
+            <!-- LOGOUT BUTTON -->
+            <button class="secondary-button order-2 sm:order-3" onclick="window.location.href='/'">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </header>
+
+        <!-- Main Welcome Card -->
+        <div class="neon-border-wrap mb-10">
+            <div class="card-content">
+                <!-- flex-col/md:flex-row is already handling responsiveness here -->
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="mb-6 md:mb-0 md:mr-8">
+                        <i class="fas fa-user-shield text-6xl sm:text-8xl neon-title" style="text-shadow: 0 0 30px var(--color-neon-purple);"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">Welcome Back</h2>
+                        <p class="text-base sm:text-lg text-gray-300 mt-3 mb-6">All systems are operational. You have <span class="font-bold text-white">3 new alerts</span> waiting for you in the feed below.</p>
+                        <button class="neon-button">
+                            <i class="fas fa-plus mr-2"></i> Create New Project
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="neon-border-wrap">
+            <div class="card-content">
+                <h2 class="text-2xl sm:text-3xl font-bold mb-6 neon-title">Recent Activity</h2>
+                
+                <div class="space-y-4">
+                    
+                    <!-- Activity Item 1 (Alert) -->
+                    <!-- Added flex-wrap for robustness on narrow screens -->
+                    <div class="activity-item">
+                        <div class="flex flex-wrap items-start md:items-center justify-between">
+                            <div class="flex-1 min-w-0 pr-0 md:pr-4 order-1">
+                                <span class="font-bold text-base sm:text-lg text-white"><i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i> System Alert:</span>
+                                <span class="text-gray-300 text-sm sm:text-base">Database usage has reached 90% capacity.</span>
+                            </div>
+                            <!-- Made time visible on all screens, forcing it to wrap if necessary -->
+                            <span class="text-sm text-gray-500 order-2 min-w-max ml-auto md:ml-0 mt-1 sm:mt-0">5m ago</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Item 2 (Project) -->
+                    <div class="activity-item">
+                        <div class="flex flex-wrap items-start md:items-center justify-between">
+                            <div class="flex-1 min-w-0 pr-0 md:pr-4 order-1">
+                                <span class="font-bold text-base sm:text-lg text-white"><i class="fas fa-rocket text-purple-400 mr-2"></i> Project Alpha:</span>
+                                <span class="text-gray-300 text-sm sm:text-base">Deployment "v2.5-main" was successful.</span>
+                            </div>
+                            <span class="text-sm text-gray-500 order-2 min-w-max ml-auto md:ml-0 mt-1 sm:mt-0">2h ago</span>
+                        </div>
+                    </div>
+
+                    <!-- Activity Item 3 (Billing) -->
+                    <div class="activity-item">
+                        <div class="flex flex-wrap items-start md:items-center justify-between">
+                            <div class="flex-1 min-w-0 pr-0 md:pr-4 order-1">
+                                <span class="font-bold text-base sm:text-lg text-white"><i class="fas fa-wallet text-green-400 mr-2"></i> Billing:</span>
+                                <span class="text-gray-300 text-sm sm:text-base">Invoice #INV-9876 has been paid.</span>
+                            </div>
+                            <span class="text-sm text-gray-500 order-2 min-w-max ml-auto md:ml-0 mt-1 sm:mt-0">1d ago</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity Item 4 (Team) -->
+                    <div class="activity-item">
+                        <div class="flex flex-wrap items-start md:items-center justify-between">
+                            <div class="flex-1 min-w-0 pr-0 md:pr-4 order-1">
+                                <span class="font-bold text-base sm:text-lg text-white"><i class="fas fa-user-plus text-blue-400 mr-2"></i> Team:</span>
+                                <span class="text-gray-300 text-sm sm:text-base">"New_User_01" has accepted your invitation.</span>
+                            </div>
+                            <span class="text-sm text-gray-500 order-2 min-w-max ml-auto md:ml-0 mt-1 sm:mt-0">2d ago</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Session Timeout Script (Unchanged, as it handles logic not layout) -->
+    <script>
+        const SESSION_TIMEOUT_SECONDS = 30; // 30 seconds
+        let redirectTimeout; // Handles the actual 30s redirect
+        let intervalTimer;   // Handles the visual 1s countdown
+        let timeLeft = SESSION_TIMEOUT_SECONDS;
+        let timerDisplay;
+        let isListening = false; // Flag to prevent multiple listener attachments
+
+        // Utility function to format time as MM:SS (always padded)
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            const paddedMinutes = String(minutes).padStart(2, '0');
+            const paddedSeconds = String(seconds).padStart(2, '0');
+            return `${paddedMinutes}:${paddedSeconds}`;
+        }
+
+        // Function to update the visual timer display
+        function updateDisplay() {
+            if (timerDisplay) {
+                timerDisplay.textContent = formatTime(timeLeft);
+            }
+        }
+        
+        // Function to handle the visual countdown every second
+        function startCountdown() {
+            updateDisplay();
+
+            // Set interval to run every second
+            intervalTimer = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateDisplay();
+                } else {
+                    clearInterval(intervalTimer); 
+                }
+            }, 1000); // Run every 1000 milliseconds (1 second)
+        }
+
+        // Function to redirect the user (the actual timeout logic)
+        function logoutUser() {
+            // Clear all timers before redirecting
+            clearTimeout(redirectTimeout);
+            clearInterval(intervalTimer); 
+            // Attempt to remove listeners if they were attached
+            if (isListening) {
+                removeEventListeners();
+            }
+            window.location.href = '/'; 
+        }
+
+        // Function to start the main 30-second inactivity detection timer
+        function startRedirectTimer() {
+            redirectTimeout = setTimeout(logoutUser, SESSION_TIMEOUT_SECONDS * 1000);
+        }
+
+        // Function to remove all CONTINUOUS activity listeners
+        function removeEventListeners() {
+            document.removeEventListener('mousemove', resetTimer);
+            document.removeEventListener('keypress', resetTimer);
+            // Clicks are intentionally excluded from continuous reset
+            document.removeEventListener('scroll', resetTimer);
+            isListening = false;
+        }
+
+        // Function to add all CONTINUOUS activity listeners (only called once)
+        function addEventListeners() {
+            if (!isListening) {
+                document.addEventListener('mousemove', resetTimer);
+                document.addEventListener('keypress', resetTimer);
+                // Clicks are intentionally excluded from continuous reset
+                document.addEventListener('scroll', resetTimer);
+                isListening = true;
+            }
+        }
+
+        // Function to reset all timers on user activity
+        // This is the function that the continuous event listeners will call.
+        function resetTimer() {
+            // 1. Clear existing timers
+            clearTimeout(redirectTimeout);
+            clearInterval(intervalTimer); 
+
+            // 2. Reset time state
+            timeLeft = SESSION_TIMEOUT_SECONDS; 
+            
+            // 3. Restart both the visual and redirect timers
+            startRedirectTimer();
+            startCountdown();
+
+            // 4. Ensure continuous listeners are active
+            addEventListeners();
+        }
+
+        // Initialization when the DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            timerDisplay = document.getElementById('session-timer');
+            
+            // 1. Display the initial time but DO NOT start the timers yet.
+            updateDisplay(); 
+
+            // 2. Set up ONE-TIME listeners (on any activity) to start the session.
+            const startSession = () => {
+                // Remove these one-time listeners
+                document.removeEventListener('mousemove', startSession);
+                document.removeEventListener('keypress', startSession);
+                document.removeEventListener('click', startSession);
+                document.removeEventListener('scroll', startSession);
+                
+                // Now, start the timer and attach the continuous activity listeners.
+                resetTimer(); 
+            };
+            
+            // Listen for the first interaction to "activate" the session.
+            document.addEventListener('mousemove', startSession);
+            document.addEventListener('keypress', startSession);
+            document.addEventListener('click', startSession);
+            document.addEventListener('scroll', startSession);
+
+            // Optional: Clear the timers if the user manually clicks Logout
+            document.querySelector('.secondary-button').addEventListener('click', function() {
+                clearTimeout(redirectTimeout);
+                clearInterval(intervalTimer);
+                removeEventListeners();
+            });
+        });
     </script>
 </body>
-
 </html>

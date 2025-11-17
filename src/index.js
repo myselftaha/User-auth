@@ -2,6 +2,7 @@
 
 const express = require("express");
 const path = require("path");
+// Assuming these are correct paths to your database logic
 const { connectToDatabase, collection } = require("./config");
 const bcrypt = require('bcrypt');
 
@@ -15,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 //use EJS as the view engine
 app.set("view engine", "ejs");
 
-// Define Port for Application (Keep this line for local testing, but Vercel ignores it)
+// Define Port for Application 
 const port = 5000;
 
 app.get("/", (req, res) => {
@@ -101,5 +102,19 @@ app.post("/login", async (req, res) => {
 });
 
 // Vercel Entry Point (Crucial for Vercel deployment)
-// Vercel uses this to start your Express app
 module.exports = app;
+
+// 🟢 NEW: Local Server Startup Logic
+// This block ensures the server only starts listening when the file is run directly (e.g., via nodemon)
+// but not when it's imported as a module (e.g., by Vercel).
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`\n\n🟢 Server Running at http://localhost:${port}`);
+        console.log(`\n============================================`);
+        console.log(`Project: User-auth`);
+        console.log(`Environment: Local Development`);
+        console.log(`--------------------------------------------`);
+        console.log(`Hit CTRL+C to stop the server.`);
+        console.log(`============================================\n`);
+    });
+}
